@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0b1120">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Serviço temporariamente indisponível | VERTRAUEM</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b1120;
+      --card: #141e31;
+      --stroke: #28364e;
+      --text: #f1f5f9;
+      --muted: #a6b2c6;
+      --accent: #68a7ff;
+      --accent-strong: #3b82f6;
+    }
+    * { box-sizing: border-box; }
+    html { min-height: 100%; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 18px;
+      background: radial-gradient(ellipse 75% 60% at 50% 0%, #193355 0%, var(--bg) 65%);
+      color: var(--text);
+      font: 16px/1.65 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container { width: min(100%, 575px); }
+    .brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 11px;
+      margin-bottom: 28px;
+      letter-spacing: .18em;
+      font-weight: 750;
+      font-size: 14px;
+      color: #e5edf8;
+    }
+    .brand-symbol {
+      display: grid;
+      place-items: center;
+      width: 35px;
+      height: 35px;
+      border: 1px solid #548cdb;
+      border-radius: 10px;
+      background: #1d365b;
+      color: #8dbaff;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+    main {
+      padding: clamp(30px, 6vw, 54px);
+      text-align: center;
+      border: 1px solid var(--stroke);
+      border-radius: 22px;
+      background: linear-gradient(150deg, #17243a 0%, var(--card) 70%);
+      box-shadow: 0 22px 75px #0003;
+    }
+    .illustration {
+      display: grid;
+      place-items: center;
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 28px;
+      border: 1px solid #33517d;
+      border-radius: 24px;
+      background: #1d3554;
+      color: #91c0ff;
+    }
+    .illustration svg { width: 42px; height: 42px; }
+    .eyebrow {
+      margin: 0 0 10px;
+      color: #8dc1ff;
+      text-transform: uppercase;
+      letter-spacing: .13em;
+      font-weight: 700;
+      font-size: 11px;
+    }
+    h1 {
+      margin: 0 0 17px;
+      font-size: clamp(25px, 5vw, 34px);
+      line-height: 1.2;
+      letter-spacing: -.035em;
+    }
+    .description {
+      margin: 0 auto;
+      max-width: 410px;
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 15px;
+    }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin: 29px 0 25px;
+      padding: 8px 15px;
+      border: 1px solid #3f4b61;
+      border-radius: 999px;
+      color: #bec9da;
+      background: #ffffff06;
+      font-size: 12px;
+    }
+    .status::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #f7b955;
+      box-shadow: 0 0 0 4px #f7b95518;
+    }
+    .retry {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 48px;
+      padding: 11px 26px;
+      border-radius: 10px;
+      background: var(--accent-strong);
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+      transition: background .15s ease, transform .15s ease;
+    }
+    .retry:hover { background: #2563eb; transform: translateY(-1px); }
+    .retry:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+    .footnote {
+      margin: 24px 0 0;
+      color: #8795ac;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    footer { margin-top: 24px; text-align: center; color: #7889a4; font-size: 12px; }
+    @media (prefers-reduced-motion: reduce) {
+      .retry { transition: none; }
+      .retry:hover { transform: none; }
+    }
+    @media (max-width: 380px) {
+      main { padding: 30px 22px; }
+      .brand { letter-spacing: .12em; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="brand" aria-label="VERTRAUEM">
+      <span class="brand-symbol" aria-hidden="true">V</span>
+      <span>VERTRAUEM</span>
+    </div>
+    <main>
+      <div class="illustration" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M11 15.5a14 14 0 0 1 25 0M37 32.5a14 14 0 0 1-25 0" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          <path d="m11 9v7h7M37 39v-7h-7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M24 18v9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="24" cy="33" r="1.5" fill="currentColor"/>
+        </svg>
+      </div>
+      <p class="eyebrow">Aviso de disponibilidade</p>
+      <h1>Voltaremos em breve.</h1>
+      <p class="description">Nosso sistema está temporariamente indisponível. Estamos trabalhando para normalizar o acesso. Por favor, tente novamente em instantes.</p>
+      <div class="status" role="status">Acesso temporariamente interrompido</div>
+      <div>
+        <a href="" class="retry" aria-label="Tentar acessar esta página novamente">Tentar novamente</a>
+      </div>
+      <p class="footnote">Se a indisponibilidade persistir, tente acessar novamente mais tarde.</p>
+    </main>
+    <footer>VERTRAUEM &bull; Infraestrutura e Tecnologia</footer>
+  </div>
+</body>
+</html>
