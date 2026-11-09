@@ -17,7 +17,7 @@ O HTML e CSS são incorporados ao Worker durante a publicação. **A página nã
 vertrauem-cloudflare-contingencia/
 ├── src/
 │   ├── index.js                  # Worker / proxy transparente
-│   └── indisponibilidade.html     # HTML + CSS da página de manutenção
+│   └── manutencao.html            # HTML + CSS animado exibido em quedas e na manutenção
 ├── tests/
 │   └── worker.test.mjs            # Testes locais sem Cloudflare
 ├── wrangler.jsonc                 # Configuração de publicação
@@ -80,9 +80,22 @@ www.elivus.com.br/*
 
 **Importante:** rotas são intencionalmente gerenciadas pelo painel, e não estão incluídas no `wrangler.jsonc`. Assim o projeto pode ser testado sem ativar automaticamente nenhum domínio de produção.
 
+## Modo manutenção programada
+
+Além da contingência automática (que já exibe `src/manutencao.html` quando a origem cai), o Worker pode **suspender o site de propósito** com a mesma página animada.
+
+- **Ligar:** defina a variável `MODO_MANUTENCAO` como `"true"` em `wrangler.jsonc` (seção `vars`) e faça commit — ou altere em Cloudflare → Worker → **Settings → Variables and Secrets**.
+- **Desligar:** volte para `"false"`.
+- Com o modo ligado, a origem **não é consultada**: navegações HTML recebem a página de manutenção (HTTP 503, `Retry-After: 600`) e APIs/arquivos recebem 503 em texto simples.
+- **Pré-visualizar** sem ativar: abra o endereço `https://SEU-WORKER.workers.dev`.
+
+Obs.: se a variável for alterada pelo painel, um próximo deploy via GitHub sobrescreve com o valor do `wrangler.jsonc`.
+
+Para mudar textos e etapas, edite os trechos marcados com `EDITAR` em `src/manutencao.html` (as etapas usam as classes `done` e `active`).
+
 ## Personalizar a página
 
-Edite `src/indisponibilidade.html` para alterar:
+Edite `src/manutencao.html` para alterar:
 
 - Nome/identidade da empresa;
 - Textos de aviso;
@@ -108,7 +121,7 @@ npm install
 npm run dev
 ```
 
-No endereço local mostrado pelo Wrangler, a página de indisponibilidade será exibida automaticamente.
+No endereço local mostrado pelo Wrangler, a página de manutenção será exibida automaticamente.
 
 ## Cuidados e limitações
 

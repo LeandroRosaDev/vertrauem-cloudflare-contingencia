@@ -5,7 +5,7 @@
  * A execução no domínio de produção exige uma Worker Route apontando
  * para o mesmo hostname do servidor de origem (DNS com proxy ativo).
  */
-import paginaIndisponivel from './indisponibilidade.html';
+import paginaManutencao from './manutencao.html';
 
 // Erros tipicamente associados a falhas na origem ou na conectividade.
 const ERROS_DE_INDISPONIBILIDADE = new Set([
@@ -17,16 +17,42 @@ const CABECALHOS_SEM_CACHE = {
   'X-Robots-Tag': 'noindex, nofollow',
 };
 
-function exibirIndisponibilidade() {
-  return new Response(paginaIndisponivel, {
+function exibirPagina(html, retryAfter) {
+  return new Response(html, {
     status: 503,
     headers: {
       ...CABECALHOS_SEM_CACHE,
       'Content-Type': 'text/html; charset=utf-8',
       'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
-      'Retry-After': '60',
+      'Retry-After': retryAfter,
     },
   });
+}
+
+// Queda da origem: mesma página de manutenção, com nova tentativa mais curta.
+function exibirIndisponibilidade() {
+  return exibirPagina(paginaManutencao, '60');
+}
+
+function exibirManutencao() {
+  return exibirPagina(paginaManutencao, '600');
+}
+
+function respostaTextoIndisponivel(retryAfter) {
+  return new Response('Serviço temporariamente indisponível.', {
+    status: 503,
+    headers: {
+      ...CABECALHOS_SEM_CACHE,
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Retry-After': retryAfter,
+    },
+  });
+}
+
+// Liga o modo manutenção pela variável MODO_MANUTENCAO ("true")
+// no wrangler.jsonc ou no painel Cloudflare (Settings → Variables).
+function manutencaoAtiva(env) {
+  return String(env?.MODO_MANUTENCAO ?? '').toLowerCase() === 'true';
 }
 
 function ehNavegacaoHTML(request) {
@@ -41,16 +67,22 @@ function ehAmbienteDeVisualizacao(hostname) {
 }
 
 export default {
-  async fetch(request) {
+  async fetch(request, env) {
     const url = new URL(request.url);
+    const emManutencao = manutencaoAtiva(env);
 
     // Exibe sempre a página em workers.dev e no ambiente local,
     // sem tentar conectar a um servidor de origem inexistente.
     if (ehAmbienteDeVisualizacao(url.hostname)) {
-      return exibirIndisponibilidade();
+      return exibirManutencao();
     }
 
     const ehPagina = ehNavegacaoHTML(request);
+
+    // Manutenção programada: o site fica suspenso sem consultar a origem.
+    if (emManutencao) {
+      return ehPagina ? exibirManutencao() : respostaTextoIndisponivel('600');
+    }
 
     try {
       // Em uma Worker Route, fetch(request) acessa a origem do DNS,
@@ -71,14 +103,7 @@ export default {
       }
 
       // Para APIs, imagens e outros recursos não retorna HTML inesperado.
-      return new Response('Serviço temporariamente indisponível.', {
-        status: 503,
-        headers: {
-          ...CABECALHOS_SEM_CACHE,
-          'Content-Type': 'text/plain; charset=utf-8',
-          'Retry-After': '60',
-        },
-      });
+      return respostaTextoIndisponivel('60');
     }
   },
 };

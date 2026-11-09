@@ -4,12 +4,13 @@ import { readFileSync } from 'node:fs';
 
 // Carrega o Worker com HTML embutido para testar sem credenciais Cloudflare
 // e sem instalar dependências de desenvolvimento.
-const html = readFileSync(new URL('../src/indisponibilidade.html', import.meta.url), 'utf8');
+const htmlManutencao = readFileSync(new URL('../src/manutencao.html', import.meta.url), 'utf8');
 const source = readFileSync(new URL('../src/index.js', import.meta.url), 'utf8');
-const script = source.replace(
-  "import paginaIndisponivel from './indisponibilidade.html';",
-  `const paginaIndisponivel = ${JSON.stringify(html)};`,
-);
+const script = source
+  .replace(
+    "import paginaManutencao from './manutencao.html';",
+    `const paginaManutencao = ${JSON.stringify(htmlManutencao)};`,
+  );
 const { default: worker } = await import(`data:text/javascript,${encodeURIComponent(script)}`);
 const fetchOriginal = globalThis.fetch;
 after(() => { globalThis.fetch = fetchOriginal; });
@@ -22,7 +23,7 @@ const htmlRequest = (host = 'app.exemplo.com') => new Request(`https://${host}/d
 test('Preview workers.dev apresenta página de manutenção', async () => {
   const resposta = await worker.fetch(htmlRequest('vertrauem-contingencia.exemplo.workers.dev'));
   assert.equal(resposta.status, 503);
-  assert.match(await resposta.text(), /Voltaremos em breve/);
+  assert.match(await resposta.text(), /para manutenção/);
   assert.equal(resposta.headers.get('cache-control'), 'no-store, max-age=0');
 });
 
@@ -37,7 +38,7 @@ test('Erro 522 em navegação HTML apresenta página de manutenção', async () 
   globalThis.fetch = async () => new Response('Cloudflare Error', { status: 522 });
   const resposta = await worker.fetch(htmlRequest());
   assert.equal(resposta.status, 503);
-  assert.match(await resposta.text(), /temporariamente indisponível/);
+  assert.match(await resposta.text(), /temporariamente suspenso/);
 });
 
 test('Erros de API não são convertidos em HTML', async () => {
@@ -70,4 +71,29 @@ test('Erro de rede recebe página HTML em navegações', async () => {
   } finally {
     console.error = logOriginal;
   }
+});
+
+
+test('Modo manutenção suspende o site sem consultar a origem', async () => {
+  let origemConsultada = false;
+  globalThis.fetch = async () => { origemConsultada = true; return new Response('SITE ONLINE'); };
+  const resposta = await worker.fetch(htmlRequest(), { MODO_MANUTENCAO: 'true' });
+  assert.equal(resposta.status, 503);
+  assert.equal(resposta.headers.get('retry-after'), '600');
+  assert.match(await resposta.text(), /para manutenção/);
+  assert.equal(origemConsultada, false);
+});
+
+test('Modo manutenção responde texto simples para APIs', async () => {
+  const resposta = await worker.fetch(new Request('https://app.exemplo.com/api/x', {
+    headers: { Accept: 'application/json' },
+  }), { MODO_MANUTENCAO: 'true' });
+  assert.equal(resposta.status, 503);
+  assert.match(resposta.headers.get('content-type'), /text\/plain/);
+});
+
+test('Modo manutenção desligado mantém o proxy normal', async () => {
+  globalThis.fetch = async () => new Response('SITE ONLINE', { status: 200 });
+  const resposta = await worker.fetch(htmlRequest(), { MODO_MANUTENCAO: 'false' });
+  assert.equal(resposta.status, 200);
 });

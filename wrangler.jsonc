@@ -5,6 +5,11 @@
   "main": "./src/index.js",
   "compatibility_date": "2026-10-01",
   "workers_dev": true,
+  // Manutenção programada: "true" suspende o site e exibe src/manutencao.html.
+  // Volte para "false" ao concluir a manutenção.
+  "vars": {
+    "MODO_MANUTENCAO": "false"
+  },
   // O HTML é carregado como texto no próprio Worker, sem depender da VPS.
   "rules": [
     {
