@@ -6,6 +6,7 @@
   "description": "Pagina de indisponibilidade no Cloudflare Workers (plano Free)",
   "scripts": {
     "dev": "wrangler dev",
+    "build": "wrangler deploy --dry-run",
     "deploy": "wrangler deploy",
     "test": "node --test"
   },

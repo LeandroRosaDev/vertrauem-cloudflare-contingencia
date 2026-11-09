@@ -43,13 +43,13 @@ Se **já existe** o Worker `vertrauem-contingencia` criado no painel:
 2. **Settings → Builds → Connect**.
 3. Autorize o GitHub e escolha o repositório e a branch `main`.
 4. Confirme que o campo `name` em `wrangler.jsonc` é **idêntico** ao nome do Worker que aparece no painel.
-5. Se for solicitado, use `npx wrangler deploy` como **Deploy command**. Não é necessário um comando de build de frontend.
+5. Mantenha o **Build command** como `npm run build`. Esse script só valida o bundle com `wrangler deploy --dry-run` e não publica o Worker. O **Deploy command** precisa ser `npx wrangler deploy`.
 6. Salve a integração. Se o deploy não começar, faça um commit no GitHub.
 
 Se ainda não existe o Worker:
 
 1. Cloudflare → **Workers & Pages → Create application → GitHub**.
-2. Conecte seu repositório e faça o deploy com `npx wrangler deploy`.
+2. Conecte seu repositório. Use `npm run build` como **Build command** e `npx wrangler deploy` como **Deploy command**.
 
 Obs.: a interface exata do Cloudflare pode mudar. Consulte as páginas oficiais nas referências ao final.
 
